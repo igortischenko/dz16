@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+      
+        
+
+        let films = [
+            {
+                name: 'Avatar',
+                year: 2004,
+                genre: ['fantasy', 'family' ]
+            },
+            {
+                name: 'Titanic',
+                year: 2001,
+                genre: ['drama']
+            },
+            {
+                name: 'Green mile',
+                year: 1997,
+                genre: ['drama']
+            },
+            {
+                name: 'Helsing',
+                year: 2000,
+                genre: ['fantasy', 'scary']
+            },
+            {
+                name: 'Oculus',
+                year: 2015,
+                genre: ['scary']
+            },
+            {
+                name: 'Home alone',
+                year: 1997,
+                genre: ['comedy', 'family']
+            }
+            
+        ];
+
+        function listGroup(list, prop) {
+            let groupObj = list.reduce((map, item) => {
+
+                if (Array.isArray(item[prop])) {
+                    for (const iterator of item[prop]) {
+                        if (!map[iterator]) {
+                            map[iterator] = [];
+                        }
+                        map[iterator].push(item);
+                    }
+                } else {
+                    if (!map[item[prop]]) {
+                        map[item[prop]] = [];
+                    }
+                    map[item[prop]].push(item);
+                }
+
+                return map;
+            }, {})
+
+            groupObj[Symbol.iterator] = function () {
+                let values = Object.values(this).flat().filter((element, index, arr) => arr.indexOf(element) == index);
+                let index = 0;
+
+                return {
+                    next() {
+                        if (index === values.length) {
+                            return {
+                                done: true
+                            }
+                        } else {
+                            return {
+                                done: false,
+                                value: values[index++]
+                            }
+                        }
+
+                        return {
+                            done: true,
+                        }
+                    }
+                }
+            }
+
+            return groupObj;
+        };
+
+
+        let groupGenre = listGroup(films, 'genre');
+        let groupYear = listGroup(films, 'year');
+        console.log(groupGenre);
+        console.log(groupYear);
+
+        for (const iterator of groupGenre) {
+            console.log(iterator);
+        };
+    </script>
+</body>
+</html>
